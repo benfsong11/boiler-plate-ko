@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
+// 데이터베이스 Model의 정의
+// 데이터의 관계, 접근과 그 흐름에 필요한 처리 과정에 관한 추상화된 모형
+// 데이터 모델은 데이터 구조를 결정한다.
+// Model은 Schema를 감싸주는 역할이다.
+
 const userSchema = mongoose.Schema({
   name: {
     type: String,
@@ -33,6 +38,8 @@ const userSchema = mongoose.Schema({
     type: Number,
   },
 });
+// 데이터베이스 Schema란
+// DB 구조와 제약조건에 대한 전반적인 명세를 기술한 것이다.
 
 const User = mongoose.model("User", userSchema);
 

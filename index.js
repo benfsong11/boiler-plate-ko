@@ -4,17 +4,25 @@ const express = require("express"); // node_modules 폴더에 있는 미리 구�
 const app = express(); // 새로운 라우터 객체를 만든다. 이 라우터의 객체 이름을 app으로 설정한다.
 const port = 5000;
 
+const { User } = require("./models/User");
+const bodyParser = require("body-parser");
+
+const config = require("./config/key");
+
+// application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// application/json
+app.use(bodyParser.json());
+
 const mongoose = require("mongoose");
 mongoose
-  .connect(
-    "mongodb+srv://benfsong11:abcd1234@boilerplate.6vsj0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-    }
-  )
+  .connect(config.mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  })
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
 
@@ -27,6 +35,17 @@ app.get("/", (req, res) => {
 // 여기서 req는 요청객체이고, res는 응답객체이다.
 // res.send는 클라이언트에 문자열로 응답하기 위한 함수이다.
 // 여기서 res.send("Hello World")라고 했기 때문에 화면에 Hello World가 출력된다.
+
+app.post("/register", (req, res) => {
+  // 회원가입할 때 필요한 정보들을 client에서 가져오면
+  // 그것들을 데이터베이스에 넣어준다.
+  const user = new User(req.body);
+
+  user.save((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).json({ success: true });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
